@@ -6,9 +6,9 @@
 class Sorter {
 public:
     void set_values(const std::vector<int>& values);
-    std::vector<int> get_values();
+    std::vector<int> get_values() const;
     virtual void sort() = 0;
-    Sorter() = default;         //これがないとコンパイル通らない
+    // Sorter() = default;         //これがないとコンパイル通らない
     virtual ~Sorter() = default; //仮想デストラクタ
 
 protected:
@@ -22,11 +22,11 @@ protected:
 
 };
 
-void Sorter::set_values(std::vector<int> values) {
+void Sorter::set_values(const std::vector<int>& values) {
     this->values = values;
 }
 
-std::vector<int> Sorter::get_values() {
+std::vector<int> Sorter::get_values() const {
     return this->values;
 }
 
