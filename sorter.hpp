@@ -5,7 +5,7 @@
 
 class Sorter {
 public:
-    void set_values(std::vector<int> values); // 非破壊的
+    void set_values(const std::vector<int>& values);
     std::vector<int> get_values();
     virtual void sort() = 0;
     Sorter() = default;         //これがないとコンパイル通らない
