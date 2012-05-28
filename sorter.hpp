@@ -1,33 +1,32 @@
 #ifndef __SORTER_HPP__
 #define __SORTER_HPP__
 
+#include <algorithm>
 #include <vector>
+#include <functional>
 
-class Sorter {
-public:
-    void set_values(const std::vector<int>& values);
-    std::vector<int> get_values() const;
-    virtual void sort() = 0;
-    // Sorter() = default;         //これがないとコンパイル通らない
-    virtual ~Sorter() = default; //仮想デストラクタ
+namespace mysorter {
 
-protected:
-    std::vector<int> values;
+    template<class T, class Predicate>
+    void selection_sort(std::vector<T>& values, const Predicate pred)
+    {
+        for (auto ri = values.begin() + 1; ri != values.end(); ++ri) {
+            auto const val = *ri;
+            auto const pos = std::find_if(values.begin(), ri, bind1st(pred, val));
+            for (auto it = ri - 1; it >= pos; --it) {
+                *(it + 1) = *it;
+            }
+            *pos = val;
+        }
 
-    // コピー・ムーブ禁止
-    Sorter(Sorter const&) = delete;
-    Sorter(Sorter&&) = delete;
-    Sorter& operator = (Sorter const&) = delete;
-    Sorter& operator = (Sorter&&) = delete;
+    };
 
-};
+    template<class T>
+    void selection_sort(std::vector<T>& values)
+    {
+        selection_sort(values, std::less<T>());
+    };
 
-void Sorter::set_values(const std::vector<int>& values) {
-    this->values = values;
-}
-
-std::vector<int> Sorter::get_values() const {
-    return this->values;
 }
 
 #endif
