@@ -25,5 +25,9 @@ int main() {
     mysorter::selection_sort(v, std::greater<int>());
     print(v);
 
+    std::cout << "quick_sort:\n";
+    mysorter::quick_sort(v.begin(), v.end());
+    print(v);
+
     return 0;
 }
