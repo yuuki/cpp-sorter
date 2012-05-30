@@ -7,24 +7,22 @@
 
 namespace mysorter {
 
-    template<class T, class Predicate>
-    void selection_sort(std::vector<T>& values, const Predicate pred)
+    template <
+        class RandomAccessIterator,
+        class Predicate = std::less< typename std::iterator_traits<RandomAccessIterator>::value_type >
+    >
+    void selection_sort(RandomAccessIterator first, RandomAccessIterator last, 
+            Predicate pred = std::less< typename std::iterator_traits<RandomAccessIterator>::value_type>())
     {
-        for (auto ri = values.begin() + 1; ri != values.end(); ++ri) {
+        for (auto ri = first + 1; ri != last; ++ri) {
             auto const val = *ri;
-            auto const pos = std::find_if(values.begin(), ri, bind1st(pred, val));
+            auto const pos = std::find_if(first, ri, bind1st(pred, val));
             for (auto it = ri - 1; it >= pos; --it) {
                 *(it + 1) = *it;
             }
             *pos = val;
         }
 
-    };
-
-    template<class T>
-    void selection_sort(std::vector<T>& values)
-    {
-        selection_sort(values, std::less<T>());
     };
 
     template<class RandomAccessIterator, class Predicate>
@@ -60,8 +58,8 @@ namespace mysorter {
             }
         }
 
-        template<class IterT, class PredT>
-        friend void quick_sort(IterT first, IterT last, PredT c);
+        // template<class IterT, class PredT>
+        // friend void quick_sort(IterT first, IterT last, PredT c);
 
     };
 

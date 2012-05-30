@@ -18,11 +18,11 @@ int main() {
     print(v);
 
     std::cout << "selection_sort:\n";
-    mysorter::selection_sort(v);
+    mysorter::selection_sort(v.begin(), v.end());
     print(v);
 
     std::cout << "selection_sort: greater\n";
-    mysorter::selection_sort(v, std::greater<int>());
+    mysorter::selection_sort(v.begin(), v.end(), std::greater<int>());
     print(v);
 
     std::cout << "quick_sort:\n";
