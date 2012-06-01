@@ -17,16 +17,24 @@ int main() {
     std::cout << "original:\n";
     print(v);
 
-    std::cout << "selection_sort:\n";
-    mysorter::selection_sort(v.begin(), v.end());
+    std::cout << "insertion_sort:\n";
+    mysorter::insertion_sort(v.begin(), v.end());
     print(v);
 
-    std::cout << "selection_sort: greater\n";
-    mysorter::selection_sort(v.begin(), v.end(), std::greater<int>());
+    std::cout << "insertion_sort: greater\n";
+    mysorter::insertion_sort(v.begin(), v.end(), std::greater<int>());
     print(v);
 
     std::cout << "quick_sort:\n";
     mysorter::quick_sort(v.begin(), v.end());
+    print(v);
+
+    std::cout << "quick_sort: greater\n";
+    mysorter::quick_sort(v.begin(), v.end(), std::greater<int>());
+    print(v);
+
+    std::cout << "quick_sort2:\n";
+    mysorter::quick_sort2(v.begin(), v.end());
     print(v);
 
     return 0;
