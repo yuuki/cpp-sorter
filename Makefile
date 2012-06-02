@@ -6,14 +6,16 @@ TOBJS = test.o
 BOBJS = bench.o
 LDFLAGS=
 
+LIB_BOOST_TEST:=-lboost_unit_test_framework-mt
+
 all: $(TARGET)
 
 test: test
 	$(CXX) $(CXXFLAGS) $(TOBJS) -o $@
 	./test
 
-bench: bench
-	$(CXX) $(CXXFLAGS) $(BOBJS) -o $@
+bench: bench.cpp sorter.hpp
+	$(CXX) $(CXXFLAGS) bench.cpp -o $@
 	./bench
 
 $(TARGET): $(OBJS)
