@@ -13,29 +13,39 @@ void print(std::vector<T> v) {
 }
 
 int main() {
-    std::vector<int> v = {32, 71, 12, 45, 26, 80, 53, 33}; //C++11から配列的な初期化構文が使えるようになった
+    std::vector<int> a = {30, 40, 10, 70, 20, 90, 50, 60, 80}; //C++11から配列的な初期化構文が使えるようになった
     std::cout << "original:\n";
-    print(v);
+    print(a);
 
     std::cout << "insertion_sort:\n";
-    mysorter::insertion_sort(v.begin(), v.end());
-    print(v);
+    auto b(a);
+    mysorter::insertion_sort(b.begin(), b.end());
+    print(b);
 
     std::cout << "insertion_sort: greater\n";
-    mysorter::insertion_sort(v.begin(), v.end(), std::greater<int>());
-    print(v);
+    auto c(a);
+    mysorter::insertion_sort(c.begin(), c.end(), std::greater<int>());
+    print(c);
 
     std::cout << "quick_sort:\n";
-    mysorter::quick_sort(v.begin(), v.end());
-    print(v);
+    auto d(a);
+    mysorter::quick_sort(d.begin(), d.end());
+    print(d);
 
     std::cout << "quick_sort: greater\n";
-    mysorter::quick_sort(v.begin(), v.end(), std::greater<int>());
-    print(v);
+    auto e(a);
+    mysorter::quick_sort(e.begin(), e.end(), std::greater<int>());
+    print(e);
 
     std::cout << "quick_sort2:\n";
-    mysorter::quick_sort2(v.begin(), v.end());
-    print(v);
+    auto f(a);
+    mysorter::quick_sort2(f.begin(), f.end());
+    print(f);
+
+    std::cout << "heap_sort:\n";
+    auto g(a);
+    mysorter::heap_sort(g.begin(), g.end());
+    print(g);
 
     return 0;
 }

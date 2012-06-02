@@ -23,4 +23,4 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ -c $^
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(TARGET) $(OBJS)
