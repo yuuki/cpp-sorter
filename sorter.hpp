@@ -16,23 +16,26 @@
 
 namespace mysorter {
 
-    // struct insertion_sort_tag{};
-    // struct quick_sort_tag{};
-    // struct quick_sort2_tag{};
-    // struct heap_sort_tag{};
+    struct insertion_sort_tag{};
+    struct quick_sort_tag{};
+    struct quick_sort2_tag{};
+    struct heap_sort_tag{};
 
     // template <class RandomAccessIterator, class tag>
-    // static void sort<RandomAccessIterator, tag>
+    //  static void sort<RandomAccessIterator, tag>
 
     // Template Alias (C++11)
     template <class T>
     using value_t = typename std::iterator_traits<T>::value_type;
 
+    template <class T>
+    using LessPred = std::less< value_t<T> >;
+
     //////////// Insertion Sort //////////////
 
-    template <class RandomAccessIterator, class Predicate = std::less< value_t<RandomAccessIterator> >>
+    template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
     void insertion_sort(RandomAccessIterator first, RandomAccessIterator last,
-            Predicate pred = std::less< value_t<RandomAccessIterator> >())
+            Predicate pred = LessPred<RandomAccessIterator>())
     {
         for (auto ri = first + 1; ri < last; ++ri) {
             auto const val = *ri;
@@ -99,18 +102,18 @@ namespace mysorter {
 
     }
 
-    template <class RandomAccessIterator, class Predicate = std::less< value_t<RandomAccessIterator> >>
+    template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
     static void quick_sort(RandomAccessIterator first, RandomAccessIterator last,
-            const Predicate pred = std::less< typename std::iterator_traits<RandomAccessIterator>::value_type >())
+            Predicate pred = LessPred<RandomAccessIterator>())
     {
         _impl_qsort::qsort<RandomAccessIterator, Predicate>(first, last - 1, pred);
     }
 
 
     //////////// Quick Sort using Insertion Sort towards parts of array. //////////////
-    template <class RandomAccessIterator, class Predicate = std::less< value_t<RandomAccessIterator> >>
+    template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
     static void quick_sort2(RandomAccessIterator first, RandomAccessIterator last,
-            const Predicate pred = std::less< typename std::iterator_traits<RandomAccessIterator>::value_type >())
+            Predicate pred = LessPred<RandomAccessIterator>())
     {
         const int min_size = 4;
         _impl_qsort::qsort2<RandomAccessIterator, Predicate>(first, last - 1, min_size, pred);
@@ -120,7 +123,7 @@ namespace mysorter {
     /////////// Heap Sort ///////////
     namespace _impl_hsort {
 
-        template <class RandomAccessIterator, class Predicate = std::less< value_t<RandomAccessIterator> >>
+        template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
         static void heapify(RandomAccessIterator first, RandomAccessIterator last, const RandomAccessIterator idx, const Predicate pred)
         {
             auto const left = first + 2 * std::distance(first, idx) + 1;
@@ -141,7 +144,7 @@ namespace mysorter {
             }
         }
 
-        template <class RandomAccessIterator, class Predicate = std::less< value_t<RandomAccessIterator> >>
+        template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
         static void build_heap(RandomAccessIterator first, RandomAccessIterator last, const Predicate pred)
         {
             const size_t n = std::distance(first, last);
@@ -152,9 +155,9 @@ namespace mysorter {
 
     }
 
-    template <class RandomAccessIterator, class Predicate = std::less< value_t<RandomAccessIterator> >>
+    template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
     static void heap_sort(RandomAccessIterator first, RandomAccessIterator last,
-            const Predicate pred = std::less< typename std::iterator_traits<RandomAccessIterator>::value_type >())
+            Predicate pred = LessPred<RandomAccessIterator>())
     {
         _impl_hsort::build_heap<RandomAccessIterator, Predicate>(first, last, pred);
         for (auto it = last - 1; it > first; --it) {
