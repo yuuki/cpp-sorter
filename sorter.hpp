@@ -17,22 +17,22 @@
 namespace mysorter {
 
     // Template Alias (C++11)
-    template <class T>
+    template <typename T>
     using value_t = typename std::iterator_traits<T>::value_type;
 
-    template <class T>
+    template <typename T>
     using LessPred = std::less< value_t<T> >;
 
 
     //////////// Insertion Sort //////////////
 
-    template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
+    template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
     void insertion_sort(RandomAccessIterator first, RandomAccessIterator last,
             Predicate pred = LessPred<RandomAccessIterator>())
     {
         for (auto ri = first + 1; ri < last; ++ri) {
             auto const val = *ri;
-            auto const pos = std::find_if(first, ri, bind1st(pred, val));
+            auto const pos = std::find_if(first, ri, std::bind(pred, val, std::placeholders::_1));
             for (auto it = ri - 1; it >= pos; --it) {
                 *(it + 1) = *it;
             }
@@ -45,7 +45,7 @@ namespace mysorter {
 
     namespace _impl_qsort {
 
-        template < class RandomAccessIterator, class Predicate >
+        template < typename RandomAccessIterator, typename Predicate >
         static RandomAccessIterator partition(RandomAccessIterator left, RandomAccessIterator right,
             const RandomAccessIterator pivot, const Predicate pred)
         {
@@ -61,7 +61,7 @@ namespace mysorter {
             return store;
         }
 
-        template < class RandomAccessIterator, class Predicate >
+        template < typename RandomAccessIterator, typename Predicate >
         static void qsort(RandomAccessIterator left, RandomAccessIterator right, const Predicate pred)
         {
             if (left >= right) return;
@@ -73,7 +73,7 @@ namespace mysorter {
             qsort(store + 1, right, pred);
         }
 
-        template < class RandomAccessIterator, class Predicate >
+        template < typename RandomAccessIterator, typename Predicate >
         static void qsort2(RandomAccessIterator left, RandomAccessIterator right, const int min_size, const Predicate pred)
         {
             if (left >= right) return;
@@ -95,7 +95,7 @@ namespace mysorter {
 
     }
 
-    template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
+    template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
     static void quick_sort(RandomAccessIterator first, RandomAccessIterator last,
             Predicate pred = LessPred<RandomAccessIterator>())
     {
@@ -104,11 +104,11 @@ namespace mysorter {
 
 
     //////////// Quick Sort using Insertion Sort towards parts of array. //////////////
-    template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
+    template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
     static void quick_sort2(RandomAccessIterator first, RandomAccessIterator last,
             Predicate pred = LessPred<RandomAccessIterator>())
     {
-        const int min_size = 4;
+        const int min_size = 20;
         _impl_qsort::qsort2<RandomAccessIterator, Predicate>(first, last - 1, min_size, pred);
     }
 
@@ -116,7 +116,7 @@ namespace mysorter {
     /////////// Heap Sort ///////////
     namespace _impl_hsort {
 
-        template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
+        template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
         static void heapify(RandomAccessIterator first, RandomAccessIterator last, const RandomAccessIterator idx, const Predicate pred)
         {
             auto const left = first + 2 * std::distance(first, idx) + 1;
@@ -137,7 +137,7 @@ namespace mysorter {
             }
         }
 
-        template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
+        template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
         static void build_heap(RandomAccessIterator first, RandomAccessIterator last, const Predicate pred)
         {
             const size_t n = std::distance(first, last);
@@ -148,7 +148,7 @@ namespace mysorter {
 
     }
 
-    template <class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator> >
+    template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
     static void heap_sort(RandomAccessIterator first, RandomAccessIterator last,
             Predicate pred = LessPred<RandomAccessIterator>())
     {
@@ -174,28 +174,28 @@ namespace mysorter {
     struct heap{ using call_tag = heap_tag; };
 
     namespace detail {
-        template <class RandomAccessIterator, class Predicate>
+        template <typename RandomAccessIterator, typename Predicate>
         void sort_(insertion_tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
             insertion_sort(first, last, pred);
         };
 
-        template <class RandomAccessIterator, class Predicate>
+        template <typename RandomAccessIterator, typename Predicate>
         void sort_(quick_tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
             quick_sort(first, last, pred);
         };
 
-        template <class RandomAccessIterator, class Predicate>
+        template <typename RandomAccessIterator, typename Predicate>
         void sort_(quick2_tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
             quick_sort2(first, last, pred);
         };
 
-        template <class RandomAccessIterator, class Predicate>
+        template <typename RandomAccessIterator, typename Predicate>
         void sort_(heap_tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
             heap_sort(first, last, pred);
         };
     }
 
-    template <class Tag, class RandomAccessIterator, class Predicate = LessPred<RandomAccessIterator>>
+    template <typename Tag, typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator>>
     void sort(Tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred = LessPred<RandomAccessIterator>()) {
         detail::sort_(typename Tag::call_tag(), first, last, pred);
     }

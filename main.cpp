@@ -4,7 +4,7 @@
 
 #include "sorter.hpp"
 
-template<class T>
+template<typename T>
 void print(std::vector<T> v) {
     for (auto const i : v) {
         std::cout << " " << i;
