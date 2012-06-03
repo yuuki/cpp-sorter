@@ -161,17 +161,23 @@ namespace mysorter {
 
 
     //////
-    ////// Tag Dispatcher for each sort
+    ////// Tag Dispacher for each sort algorithm
     //////
 
     struct insertion_tag{};
     struct quick_tag{};
     struct quick2_tag{};
     struct heap_tag{};
-    struct insertion{ using call_tag = insertion_tag; }; // using alias
-    struct quick{ using call_tag = quick_tag; };
-    struct quick2{ using call_tag = quick2_tag; };
-    struct heap{ using call_tag = heap_tag; };
+    struct insertion{ using sort_tag = insertion_tag; }; // using alias
+    struct quick{ using sort_tag = quick_tag; };
+    struct quick2{ using sort_tag = quick2_tag; };
+    struct heap{ using sort_tag = heap_tag; };
+
+    template<typename T> struct sort_traits { using sort_tag = T; };
+    template<> struct sort_traits<insertion> { using sort_tag = insertion::sort_tag; };
+    template<> struct sort_traits<quick> { using sort_tag = quick::sort_tag; };
+    template<> struct sort_traits<quick2> { using sort_tag = quick2::sort_tag; };
+    template<> struct sort_traits<heap> { using sort_tag = heap::sort_tag; };
 
     namespace detail {
         template <typename RandomAccessIterator, typename Predicate>
@@ -193,11 +199,15 @@ namespace mysorter {
         void sort_(heap_tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
             heap_sort(first, last, pred);
         };
+        template <typename T, typename RandomAccessIterator, typename Predicate>
+        void sort_(T, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
+            quick_sort2(first, last, pred);
+        };
     }
 
     template <typename Tag, typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator>>
     void sort(Tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred = LessPred<RandomAccessIterator>()) {
-        detail::sort_(typename Tag::call_tag(), first, last, pred);
+        detail::sort_(typename Tag::sort_tag(), first, last, pred);
     }
 
 }

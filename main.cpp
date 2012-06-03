@@ -15,7 +15,7 @@ void print(std::vector<T> v) {
 int main() {
     using namespace mysorter;
 
-    std::vector<int> a = {30, 40, 10, 70, 20, 90, 50, 60, 80}; //C++11から配列的な初期化構文が使えるようになった
+    std::vector<int> a = {30, 40, 10, 70, 20, 90, 50, 60, 80};
     std::cout << "original:\n";
     print(a);
 
