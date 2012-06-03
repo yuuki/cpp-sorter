@@ -173,11 +173,11 @@ namespace mysorter {
     struct quick2{ using sort_tag = quick2_tag; };
     struct heap{ using sort_tag = heap_tag; };
 
-    template<typename T> struct sort_traits { using sort_tag = T; };
-    template<> struct sort_traits<insertion> { using sort_tag = insertion::sort_tag; };
-    template<> struct sort_traits<quick> { using sort_tag = quick::sort_tag; };
-    template<> struct sort_traits<quick2> { using sort_tag = quick2::sort_tag; };
-    template<> struct sort_traits<heap> { using sort_tag = heap::sort_tag; };
+    template <typename T> struct sort_traits { using sort_tag = T; };
+    template <> struct sort_traits<insertion> { using sort_tag = insertion::sort_tag; };
+    template <> struct sort_traits<quick> { using sort_tag = quick::sort_tag; };
+    template <> struct sort_traits<quick2> { using sort_tag = quick2::sort_tag; };
+    template <> struct sort_traits<heap> { using sort_tag = heap::sort_tag; };
 
     namespace detail {
         template <typename RandomAccessIterator, typename Predicate>
@@ -205,7 +205,7 @@ namespace mysorter {
         };
     }
 
-    template <typename Tag, typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator>>
+    template <typename Tag = quick2, typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator>>
     void sort(Tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred = LessPred<RandomAccessIterator>()) {
         using sort_tag = typename sort_traits<Tag>::sort_tag;
         detail::sort_(sort_tag(), first, last, pred);

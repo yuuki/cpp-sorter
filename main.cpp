@@ -19,6 +19,11 @@ int main() {
     std::cout << "original:\n";
     print(a);
 
+    std::cout << "default sort:\n";
+    auto z(a);
+    sort(z.begin(), z.end());
+    print(z);
+
     std::cout << "insertion_sort:\n";
     auto b(a);
     sort(insertion(), b.begin(), b.end());
