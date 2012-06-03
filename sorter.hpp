@@ -207,7 +207,8 @@ namespace mysorter {
 
     template <typename Tag, typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator>>
     void sort(Tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred = LessPred<RandomAccessIterator>()) {
-        detail::sort_(typename Tag::sort_tag(), first, last, pred);
+        using sort_tag = typename sort_traits<Tag>::sort_tag;
+        detail::sort_(sort_tag(), first, last, pred);
     }
 
 }
