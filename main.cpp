@@ -54,5 +54,10 @@ int main() {
     sort(heap(), g.begin(), g.end());
     print(g);
 
+    std::cout << "shell_sort:\n";
+    auto h(a);
+    sort(shell(), g.begin(), g.end());
+    print(g);
+
     return 0;
 }

@@ -28,7 +28,7 @@ namespace mysorter {
 
     template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
     void insertion_sort(RandomAccessIterator first, RandomAccessIterator last,
-            Predicate pred = LessPred<RandomAccessIterator>())
+            const Predicate pred = LessPred<RandomAccessIterator>())
     {
         for (auto ri = first + 1; ri < last; ++ri) {
             auto const val = *ri;
@@ -40,6 +40,28 @@ namespace mysorter {
         }
     };
 
+
+    /////////// Shell Sort ///////////
+
+    template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
+    void shell_sort(RandomAccessIterator first, RandomAccessIterator last, const Predicate pred = LessPred<RandomAccessIterator>())
+    {
+        auto h = 1;
+        while (h < std::distance(first, last)) h = 3*h + 1;
+        h /= 3;
+        while (h != 0) {
+            for (auto it = first + h; it < last; ++it) {
+                auto val = *it;
+                auto jt = it - h;
+                for (; pred(val, *jt) and jt >= first + h; jt -= h) {
+                   *(jt + h) = *jt;
+                }
+                *(jt + h) = val;
+            }
+            h /= 3;
+        }
+        insertion_sort(first, last, pred);
+    }
 
     //////////// Quick Sort //////////////
 
@@ -97,7 +119,7 @@ namespace mysorter {
 
     template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
     static void quick_sort(RandomAccessIterator first, RandomAccessIterator last,
-            Predicate pred = LessPred<RandomAccessIterator>())
+            const Predicate pred = LessPred<RandomAccessIterator>())
     {
         _impl_qsort::qsort<RandomAccessIterator, Predicate>(first, last - 1, pred);
     }
@@ -106,7 +128,7 @@ namespace mysorter {
     //////////// Quick Sort using Insertion Sort towards parts of array. //////////////
     template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
     static void quick_sort2(RandomAccessIterator first, RandomAccessIterator last,
-            Predicate pred = LessPred<RandomAccessIterator>())
+            const Predicate pred = LessPred<RandomAccessIterator>())
     {
         const int min_size = 20;
         _impl_qsort::qsort2<RandomAccessIterator, Predicate>(first, last - 1, min_size, pred);
@@ -150,7 +172,7 @@ namespace mysorter {
 
     template <typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator> >
     static void heap_sort(RandomAccessIterator first, RandomAccessIterator last,
-            Predicate pred = LessPred<RandomAccessIterator>())
+            const Predicate pred = LessPred<RandomAccessIterator>())
     {
         _impl_hsort::build_heap<RandomAccessIterator, Predicate>(first, last, pred);
         for (auto it = last - 1; it > first; --it) {
@@ -168,45 +190,48 @@ namespace mysorter {
     struct quick_tag{};
     struct quick2_tag{};
     struct heap_tag{};
+    struct shell_tag{};
     struct insertion{ using sort_tag = insertion_tag; }; // using alias
     struct quick{ using sort_tag = quick_tag; };
     struct quick2{ using sort_tag = quick2_tag; };
     struct heap{ using sort_tag = heap_tag; };
+    struct shell{ using sort_tag = shell_tag; };
 
     template <typename T> struct sort_traits { using sort_tag = T; };
     template <> struct sort_traits<insertion> { using sort_tag = insertion::sort_tag; };
     template <> struct sort_traits<quick> { using sort_tag = quick::sort_tag; };
     template <> struct sort_traits<quick2> { using sort_tag = quick2::sort_tag; };
     template <> struct sort_traits<heap> { using sort_tag = heap::sort_tag; };
+    template <> struct sort_traits<shell> { using sort_tag = shell::sort_tag; };
 
     namespace detail {
         template <typename RandomAccessIterator, typename Predicate>
-        void sort_(insertion_tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
+        void sort_(const insertion_tag, RandomAccessIterator first, RandomAccessIterator last, const Predicate pred) {
             insertion_sort(first, last, pred);
         };
 
         template <typename RandomAccessIterator, typename Predicate>
-        void sort_(quick_tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
+        void sort_(const quick_tag, RandomAccessIterator first, RandomAccessIterator last, const Predicate pred) {
             quick_sort(first, last, pred);
         };
 
         template <typename RandomAccessIterator, typename Predicate>
-        void sort_(quick2_tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
+        void sort_(const quick2_tag, RandomAccessIterator first, RandomAccessIterator last, const Predicate pred) {
             quick_sort2(first, last, pred);
         };
 
         template <typename RandomAccessIterator, typename Predicate>
-        void sort_(heap_tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
+        void sort_(const heap_tag, RandomAccessIterator first, RandomAccessIterator last, const Predicate pred) {
             heap_sort(first, last, pred);
         };
         template <typename T, typename RandomAccessIterator, typename Predicate>
-        void sort_(T, RandomAccessIterator first, RandomAccessIterator last, Predicate pred) {
-            quick_sort2(first, last, pred);
+        void sort_(const T, RandomAccessIterator first, RandomAccessIterator last, const Predicate pred) {
+            shell_sort(first, last, pred);
         };
     }
 
     template <typename Tag = quick2, typename RandomAccessIterator, typename Predicate = LessPred<RandomAccessIterator>>
-    void sort(Tag, RandomAccessIterator first, RandomAccessIterator last, Predicate pred = LessPred<RandomAccessIterator>()) {
+    void sort(const Tag, RandomAccessIterator first, RandomAccessIterator last, const Predicate pred = LessPred<RandomAccessIterator>()) {
         using sort_tag = typename sort_traits<Tag>::sort_tag;
         detail::sort_(sort_tag(), first, last, pred);
     }

@@ -20,7 +20,7 @@ static void do_mysort(std::vector<value_t> a, std::less<value_t> lt) {
 
     for(int i = 0; i < 100; ++i) {
         std::copy(a.begin(), a.end(), b.begin());
-        mysorter::sort(tag(), b.begin(), b.end());
+        mysorter::sort(tag(), b.begin(), b.end(), lt);
     }
 
     std::cerr << typeid(tag()).name() << "\t\t\t" << t.elapsed() << std::endl;
@@ -84,6 +84,7 @@ static void bench(int const size, state_t const state) {
         do_mysort<mysorter::quick, value_t>(a, lt);
         do_mysort<mysorter::quick2, value_t>(a, lt);
         do_mysort<mysorter::heap, value_t>(a, lt);
+        do_mysort<mysorter::shell, value_t>(a, lt);
     }
 }
 
