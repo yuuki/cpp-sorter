@@ -1,6 +1,6 @@
 CXX = g++-4.7
-CXXFLAGS = -O2 -Wall -Wextra -std=c++11
-TARGET = sorter
+CXXFLAGS = -O2 -Wall -Wextra -std=c++11 -I/usr/local/include -L/usr/local/lib -ltbb
+TARGET = sort
 OBJS	= main.o
 LDFLAGS=
 

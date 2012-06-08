@@ -13,7 +13,7 @@
 #include "sorter.hpp"
 
 using namespace mysorter;
-using test_types = boost::mpl::list<insertion,quick,quick2,heap,shell>;
+using test_types = boost::mpl::list<insertion, quick, quick2, heap, shell, shell_tbb>;
 
 BOOST_AUTO_TEST_CASE_TEMPLATE( simple10, tag, test_types ) {
     std::vector<int> a;

@@ -6,6 +6,7 @@
 #include <boost/rational.hpp>
 
 #include <boost/timer.hpp>
+#include <tbb/tick_count.h>
 
 #include "sorter.hpp"
 
@@ -16,6 +17,21 @@ enum state_t {
 template <typename tag, typename value_t>
 static void do_mysort(std::vector<value_t> a, std::less<value_t> lt) {
     std::vector<value_t> b(a);
+
+    auto const start = tbb::tick_count::now();
+    for(int i = 0; i < 100; ++i) {
+        std::copy(a.begin(), a.end(), b.begin());
+        mysorter::sort(tag(), b.begin(), b.end(), lt);
+    }
+    auto const end = tbb::tick_count::now();
+
+    std::cerr << typeid(tag()).name() << "\t\t\t" << (end - start).seconds() << std::endl;
+
+}
+
+template <typename tag, typename value_t>
+static void do_mysort_thread(std::vector<value_t> a, std::less<value_t> lt) {
+    std::vector<value_t> b(a);
     boost::timer t;
 
     for(int i = 0; i < 100; ++i) {
@@ -24,7 +40,6 @@ static void do_mysort(std::vector<value_t> a, std::less<value_t> lt) {
     }
 
     std::cerr << typeid(tag()).name() << "\t\t\t" << t.elapsed() << std::endl;
-
 }
 
 template <typename value_t>
@@ -78,6 +93,17 @@ static void bench(int const size, state_t const state) {
         std::cerr << "std::stable_sort " << t.elapsed() << std::endl;
     }
 
+    {
+        std::vector<value_t> b(a);
+        tbb::tick_count t;
+
+        for(int i = 0; i < 100; ++i) {
+            std::copy(a.begin(), a.end(), b.begin());
+            std::stable_sort(b.begin(), b.end(), lt);
+        }
+
+        std::cerr << "std::stable_sort " << t.elapsed() << std::endl;
+    }
 
     {
         do_mysort<mysorter::insertion, value_t>(a, lt);
@@ -85,6 +111,8 @@ static void bench(int const size, state_t const state) {
         do_mysort<mysorter::quick2, value_t>(a, lt);
         do_mysort<mysorter::heap, value_t>(a, lt);
         do_mysort<mysorter::shell, value_t>(a, lt);
+        e .../boost/simd/arithmetic/include/boost/simd/toolbox/arithmetic/functions/simd/common/dist.hpp |    4 +-/ do_mysort_thread<mysorter::shell_openmp, value_t>(a, lt);
+        do_mysort_thread<mysorter::shell_tbb, value_t>(a, lt);
     }
 }
 

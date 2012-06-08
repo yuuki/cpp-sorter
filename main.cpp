@@ -56,8 +56,13 @@ int main() {
 
     std::cout << "shell_sort:\n";
     auto h(a);
-    sort(shell(), g.begin(), g.end());
-    print(g);
+    sort(shell(), h.begin(), h.end());
+    print(h);
+
+    std::cout << "shell_sort_with_tbb:\n";
+    auto i(a);
+    sort(shell_tbb(), i.begin(), i.end());
+    print(i);
 
     return 0;
 }
